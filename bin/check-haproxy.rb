@@ -80,6 +80,16 @@ class CheckHAProxy < Sensu::Plugin::Check::CLI
          default: 90,
          proc: proc(&:to_i),
          description: 'Session Limit Critical Percent, default: 90'
+  option :services_down_critical,
+         short: '-D NUMBER',
+         long: '--down-critical',
+         proc: proc(&:to_i),
+         description: 'set number of services down critical'
+  option :services_down_warn,
+         short: '-d NUMBER',
+         long: '--down-warning',
+         proc: proc(&:to_i),
+         description: 'Set number of services down warning'
   option :backend_session_warn_percent,
          short: '-b PERCENT',
          proc: proc(&:to_i),
@@ -133,6 +143,7 @@ class CheckHAProxy < Sensu::Plugin::Check::CLI
       failed_names = services.reject { |svc| svc[:status] == 'UP' || svc[:status] == 'OPEN' || svc[:status] == 'no check' }.map { |svc| svc[:svname] }
       critical_sessions = services.select { |svc| svc[:slim].to_i > 0 && (100 * svc[:scur].to_f / svc[:slim].to_f) > config[:session_crit_percent] }
       warning_sessions = services.select { |svc| svc[:slim].to_i > 0 && (100 * svc[:scur].to_f / svc[:slim].to_f) > config[:session_warn_percent] }
+      services_down_count = failed_names.size
 
       critical_backends = services.select do |svc|
         config[:backend_session_crit_percent] &&
@@ -158,12 +169,16 @@ class CheckHAProxy < Sensu::Plugin::Check::CLI
       elsif config[:backend_session_crit_percent] && !critical_backends.empty?
         critical status + '; Active backends critical: ' +
                  critical_backends.map { |s| "current sessions: #{s[:scur]}, maximum sessions: #{s[:smax]} for #{s[:pxname]} backend." }.join(', ')
+      elsif !config[:services_down_critical].nil? && services_down_count > config[:services_down_critical]
+        critical status
       elsif services.size < config[:min_warn_count]
         warning status
       elsif percent_up < config[:warn_percent]
         warning status
       elsif !warning_sessions.empty? && config[:backend_session_warn_percent].nil?
         warning status + '; Active sessions warning: ' + warning_sessions.map { |s| "#{s[:scur]} #{s[:pxname]}.#{s[:svname]}" }.join(', ')
+      elsif !config[:services_down_warn].nil? && services_down_count > config[:services_down_warn]
+        warning status
       elsif config[:backend_session_warn_percent] && !warning_backends.empty?
         critical status + '; Active backends warning: ' +
                  warning_backends.map { |s| "current sessions: #{s[:scur]}, maximum sessions: #{s[:smax]} for #{s[:pxname]} backend." }.join(', ')
