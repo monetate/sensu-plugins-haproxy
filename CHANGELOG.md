@@ -3,7 +3,41 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
+
 ## [Unreleased]
+
+## [1.4.0] - 2017-09-09
+### Added
+- metrics-haproxy.rb: new flag to expose all possible metrics `--expose-all` (@bergerx)
+- added flag to use raw haproxy metric names `--use-haproxy-names` (@bergerx)
+- added flag to include explicit type names in generated metrics names  `--use-explicit-names` (@bergerx)
+
+## [1.3.0] - 2017-08-05
+### Added
+- Flag to use SSL in `check-haproxy.rb` (@foozmeat) (@Evesey)
+
+## [1.2.0] - 2017-07-25
+### Added
+- Ruby 2.4.1 testing
+- Add frontend request rate metrics to `--server-metrics` (@Evesey)
+
+## [1.1.0] - 2017-01-30
+### Added
+- `check-haproxy.rb`: added fail on missing service flag (@obazoud)
+- Consider backends in DRAIN status as UP and add flag to include backends in MAINT status (@modax)
+
+## [1.0.0] - 2016-12-08
+### Added
+- added names of the failed backends to check-haproxy.rb status
+- added check status of failed backends to check-haproxy.rb output
+- support for Ruby 2.3.0
+
+### Changed
+- check-haproxy.rb: Services without a health check should not be considered failed
+- Update to rubocop 0.40 and cleanup
+
+### Removed
+- Ruby 1.9.3 support
 
 ## [0.1.1] - 2016-04-23
 ### Added
@@ -41,7 +75,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/1.4.0...HEAD
+[1.4.0]:https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/1.3.0...1.4.0
+[1.3.0]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/1.2.0...1.3.0
+[1.2.0]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/1.1.0...1.2.0
+[1.1.0]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/1.0.0...1.1.0
+[1.0.0]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/0.1.1...1.0.0
 [0.1.1]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/0.0.5...0.1.0
 [0.0.5]: https://github.com/sensu-plugins/sensu-plugins-haproxy/compare/0.0.4...0.0.5
